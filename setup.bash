@@ -1,5 +1,5 @@
-sudo apt-get update && sudo apt-get upgrade
-sudo apt-get install libgl1-mesa-dev
+sudo apt-get update -y && sudo apt-get upgrade -y
+sudo apt-get install libgl1-mesa-dev -y
 if [ -s ~/.pyenv ]; then
     git clone https://github.com/yyuu/pyenv.git ~/.pyenv
 fi
