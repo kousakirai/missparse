@@ -3,7 +3,6 @@ from discord import Intents, Message, Embed, Colour
 import discord
 import aiohttp
 import dotenv
-import asyncio
 import os
 import pprint
 import urllib.request
