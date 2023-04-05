@@ -1,5 +1,5 @@
 from discord.ext import commands
-from discord import Intents, Message, Embed
+from discord import Intents, Message, Embed, Colour
 import discord
 import aiohttp
 import dotenv
@@ -71,28 +71,33 @@ async def on_message(message: Message):
     is_sensitive = False
     if "https://misskey.io/notes/" in message.content:
         note = await get_note(message.content[message.content.rfind('/') + 1:])
-        print(message.content[message.content.rfind('/') + 1:])
-        print(note)
         images = get_images(note)
         embed = Embed(title="リンク展開", description=get_text(note))
+        embed.color = Colour.green()
         embed.set_author(name=get_name(note), url=f"https://misskey.io/@{get_user_name(note)}", icon_url=get_author_icon(note))
         if images:
+            print("画像抽出中")
             for image in images:
                 if image[1]:
                     is_sensitive = True
                     break
 
+            print("画像の判定")
             if is_sensitive:
-                image = mosaic(get_opencv_img_from_url(get_author_icon(note), cv2.IMREAD_UNCHANGED))
+                image = mosaic(get_opencv_img_from_url(images[0], cv2.IMREAD_UNCHANGED))
                 file = discord.File(BytesIO(image), filename="image.png")
-                embed.set_image(url="attachment://image.png")
                 embed.add_field(name="ノートに含まれている画像に閲覧注意タグがついていたため、画像を表示しませんでした。\n表示したい場合は、下の画像ボタンを押してください。")
+            else:
+                req = urllib.request.Request(images[0][0])
+                req.add_header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36")
+                file = discord.File(BytesIO(urllib.request.urlopen(req).read()), filename="image.png")
+            view = discord.ui.View(timeout=None)
+            view.add_item(Button(images))
+            embed.set_image(url="attachment://image.png")
+            await message.channel.send(
+                embed=embed, view=view, file=file
+            )
 
-                view = discord.ui.View(timeout=None)
-                view.add_item(Button(images))
-                await message.channel.send(
-                    embed=embed, view=view, file=file
-                )
         else:
             await message.channel.send(
                 embed=embed
