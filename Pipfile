@@ -6,8 +6,10 @@ name = "pypi"
 [packages]
 "discord.py" = "*"
 aiohttp = "*"
-python-dotenv = "*"
 opencv-python = "*"
+python-dotenv = "*"
+pillow = "*"
+jishaku = "*"
 
 [dev-packages]
 flake8 = "*"
