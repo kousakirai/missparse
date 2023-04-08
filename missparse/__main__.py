@@ -2,7 +2,6 @@ from discord.ext import commands
 from discord import Intents
 import dotenv
 import os
-import logging
 
 
 dotenv.load_dotenv()
