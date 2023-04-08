@@ -4,7 +4,7 @@ import dotenv
 import os
 
 
-dotenv.load_dotenv()
+dotenv.load_dotenv("../.env")
 bot = commands.Bot(command_prefix=".", intents=Intents.all())
 
 @bot.event
